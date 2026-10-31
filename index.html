@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IW Spatial Toolkit adds coordinate-first spatial context, typed paths, polygonal areas, and local spatial queries to Infinite Worlds projects.">
+  <meta name="theme-color" content="#fffaf2">
+  <meta property="og:title" content="IW Spatial Toolkit">
+  <meta property="og:description" content="A coordinate-first spatial authoring toolkit for Infinite Worlds.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/iw-spatial-hero.png">
+  <title>IW Spatial Toolkit — Give your world a sense of place</title>
+  <link rel="icon" href="assets/iw-spatial-logo.png" type="image/png">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="site-config.js"></script>
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" data-header>
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="IW Spatial Toolkit home">
+        <img src="assets/iw-spatial-logo.png" width="44" height="44" alt="">
+        <span class="brand-name"><strong>IW Spatial</strong><small>Toolkit</small></span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="sr-only">Toggle navigation</span>
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary navigation" data-nav>
+        <a href="#features">Features</a>
+        <a href="#workflow">How it works</a>
+        <a href="#package">Package</a>
+        <a data-link="docs" href="docs/index.html">Documentation</a>
+        <a class="nav-github" data-link="github" href="https://github.com/your-account/iw-spatial-toolkit">
+          GitHub
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 13.5l7-7m-5.5 0h5.5V12"/></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+      <div class="shell hero-layout">
+        <div class="hero-copy" data-reveal>
+          <p class="eyebrow"><span></span> Spatial authoring for Infinite Worlds</p>
+          <h1>Give your world<br>a sense of <em>place.</em></h1>
+          <p class="hero-lede">Store the complete map mechanically. Give the Storyteller only the local context it needs. Let players stand at landmarks, follow roads, cross rivers, or roam open terrain without losing their place.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" data-link="docs" href="docs/index.html">
+              Read the documentation
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4"/></svg>
+            </a>
+            <a class="button button-secondary" data-link="download" href="downloads/IW-Spatial-Context-1.0.RC3.zip" download>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m-4-4 4 4 4-4M4 16h12"/></svg>
+              Download toolkit
+            </a>
+          </div>
+          <div class="hero-meta" aria-label="Current versions">
+            <span><strong>1.0 RC3</strong> package</span>
+            <span><strong>1.2</strong> schema</span>
+            <span><strong>10 m</strong> authoring resolution</span>
+          </div>
+        </div>
+
+        <div class="hero-art" data-reveal data-delay="1">
+          <div class="hero-art-frame">
+            <img src="assets/iw-spatial-hero.png" width="1200" height="600" alt="Layered translucent maps with roads, rivers, terrain, and map pins">
+            <div class="floating-label label-context">
+              <span class="signal signal-coral"></span>
+              <div><small>Current context</small><strong>King's Road · alongside</strong></div>
+            </div>
+            <div class="floating-label label-position">
+              <span class="signal signal-teal"></span>
+              <div><small>Position</small><strong>34.25, 18.70 km</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="Toolkit qualities">
+      <div class="shell proof-grid">
+        <div><span class="proof-icon">◇</span><p><strong>Coordinate-first</strong><small>Authoritative XYZ state</small></p></div>
+        <div><span class="proof-icon">⌁</span><p><strong>Context-efficient</strong><small>Only the local slice reaches AI</small></p></div>
+        <div><span class="proof-icon">◎</span><p><strong>Offline-capable</strong><small>No runtime dependencies</small></p></div>
+        <div><span class="proof-icon">✓</span><p><strong>Validated</strong><small>Compiler checks references and geometry</small></p></div>
+      </div>
+    </section>
+
+    <section class="section context-section">
+      <div class="shell context-layout">
+        <div class="section-intro" data-reveal>
+          <p class="eyebrow"><span></span> Context, not a cartography dump</p>
+          <h2>The map stays complete.<br>The prompt stays focused.</h2>
+          <p>IW Spatial keeps geography, locations, paths, and areas in hidden script-readable trackers. A refresh step calculates exactly what matters around the player's current coordinates and exposes one compact local context to the Storyteller.</p>
+        </div>
+
+        <div class="pipeline" aria-label="Spatial context pipeline" data-reveal data-delay="1">
+          <article class="pipeline-card source-card">
+            <div class="pipeline-number">01</div>
+            <div class="pipeline-icon">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 13l16-7 16 7-16 7-16-7Zm0 11 16 7 16-7M8 35l16 7 16-7"/></svg>
+            </div>
+            <h3>Author the world</h3>
+            <p>Readable YAML for points, paths, polygons, descriptions, and query settings.</p>
+            <code>world-geography.yaml</code>
+          </article>
+          <div class="pipeline-arrow" aria-hidden="true">
+            <svg viewBox="0 0 48 20"><path d="M2 10h40m-7-6 7 6-7 6"/></svg>
+          </div>
+          <article class="pipeline-card compile-card">
+            <div class="pipeline-number">02</div>
+            <div class="pipeline-icon">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 9h20v30H14zM9 16h5m-5 8h5m-5 8h5m25-16h5m-5 8h5m-5 8h5M20 17h8m-8 7h8m-8 7h5"/></svg>
+            </div>
+            <h3>Compile and index</h3>
+            <p>Validate the source, calculate path distances, and build a sparse candidate grid.</p>
+            <code>build_spatial_context.py</code>
+          </article>
+          <div class="pipeline-arrow" aria-hidden="true">
+            <svg viewBox="0 0 48 20"><path d="M2 10h40m-7-6 7 6-7 6"/></svg>
+          </div>
+          <article class="pipeline-card context-card">
+            <div class="pipeline-number">03</div>
+            <div class="pipeline-icon">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 43s13-12 13-24a13 13 0 1 0-26 0c0 12 13 24 13 24Z"/><circle cx="24" cy="19" r="5"/></svg>
+            </div>
+            <h3>Refresh locally</h3>
+            <p>Resolve containing areas and nearby discovered places and paths from coordinates.</p>
+            <code>$spatial_context</code>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section features-section" id="features">
+      <div class="shell">
+        <div class="section-heading" data-reveal>
+          <div>
+            <p class="eyebrow"><span></span> Built for spatial storytelling</p>
+            <h2>Mechanics precise enough<br>to disappear into the story.</h2>
+          </div>
+          <p>The toolkit handles the geometry and relationships. Your world decides when movement becomes authoritative and what that movement means.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card feature-wide coral-card" data-reveal>
+            <div class="feature-icon">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29S26 20 26 11a10 10 0 1 0-20 0c0 9 10 18 10 18Z"/><circle cx="16" cy="11" r="3.5"/></svg>
+            </div>
+            <div>
+              <h3>Coordinate-first navigation</h3>
+              <p>Absolute <code>x_km</code>, <code>y_km</code>, and <code>z_m</code> coordinates remain authoritative. Named anchors and active paths add detail without replacing position.</p>
+            </div>
+            <span class="feature-tag">Free roaming ready</span>
+          </article>
+
+          <article class="feature-card lilac-card" data-reveal data-delay="1">
+            <div class="feature-icon">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 24 12 8l8 13 7-12M4 27h24"/></svg>
+            </div>
+            <h3>Typed paths</h3>
+            <p>Model roads, trails, rivers, creeks, and streams with ordered navigation points, elevation, direction, and exact proximity.</p>
+          </article>
+
+          <article class="feature-card teal-card" data-reveal data-delay="2">
+            <div class="feature-icon">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="m4 9 9-5 7 5 8-4v18l-8 5-7-5-9 4V9Zm9-5v19m7-14v19"/></svg>
+            </div>
+            <h3>Polygonal areas</h3>
+            <p>Resolve every containing polygon or multipolygon, including nested semantics and true geometric holes.</p>
+          </article>
+
+          <article class="feature-card teal-card" data-reveal>
+            <div class="feature-icon">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 5h22v22H5zM12 5v22M20 5v22M5 12h22M5 20h22"/><circle cx="20" cy="12" r="3"/></svg>
+            </div>
+            <h3>Sparse spatial index</h3>
+            <p>Candidate grids reduce runtime search work while exact distances, projections, and polygon membership remain precise.</p>
+          </article>
+
+          <article class="feature-card coral-card" data-reveal data-delay="1">
+            <div class="feature-icon">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 8h20M6 16h13M6 24h17"/><circle cx="24" cy="16" r="3"/></svg>
+            </div>
+            <h3>Compact local context</h3>
+            <p>Return validated location detail, current areas, and the nearest discovered locations and paths—bounded by configurable limits.</p>
+          </article>
+
+          <article class="feature-card lilac-card" data-reveal data-delay="2">
+            <div class="feature-icon">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 7h20v18H6zM10 12h12M10 17h8M10 22h5"/><path d="m20 23 7-7"/></svg>
+            </div>
+            <h3>Validation built in</h3>
+            <p>Catch broken references, invalid coordinates, path-order problems, malformed polygons, cycles, and inconsistent initial anchors.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section workflow-section" id="workflow">
+      <div class="shell">
+        <div class="section-heading compact-heading" data-reveal>
+          <div>
+            <p class="eyebrow"><span></span> From map to runtime</p>
+            <h2>A practical authoring loop.</h2>
+          </div>
+          <a class="text-link" data-link="docs" href="docs/index.html">Open the beginner guide <span>→</span></a>
+        </div>
+
+        <ol class="workflow-grid">
+          <li data-reveal>
+            <span class="step-number">1</span>
+            <div class="step-rule"></div>
+            <h3>Map</h3>
+            <p>Author locations, typed paths, and area geometry in the two readable YAML source files.</p>
+          </li>
+          <li data-reveal data-delay="1">
+            <span class="step-number">2</span>
+            <div class="step-rule"></div>
+            <h3>Describe</h3>
+            <p>Add location descriptions, semantic areas, query radii, and initial navigation state.</p>
+          </li>
+          <li data-reveal data-delay="2">
+            <span class="step-number">3</span>
+            <div class="step-rule"></div>
+            <h3>Compile</h3>
+            <p>Run the builder to validate sources, calculate distances, and generate the portable data bank.</p>
+          </li>
+          <li data-reveal data-delay="3">
+            <span class="step-number">4</span>
+            <div class="step-rule"></div>
+            <h3>Integrate</h3>
+            <p>Merge the six runtime trackers into a complete IW world, then test movement and boundaries.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section package-section" id="package">
+      <div class="shell package-layout">
+        <div class="package-copy" data-reveal>
+          <p class="eyebrow"><span></span> Everything in one portable package</p>
+          <h2>Readable sources.<br>Inspectable output.</h2>
+          <p>No service layer and no black box. The toolkit is a set of static source files, a compiler, a PawScript refresh routine, and a self-contained reference.</p>
+          <a class="button button-primary" data-link="download" href="downloads/IW-Spatial-Context-1.0.RC3.zip" download>
+            Download 1.0 RC3
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m-4-4 4 4 4-4M4 16h12"/></svg>
+          </a>
+        </div>
+        <div class="file-tree" data-reveal data-delay="1" aria-label="Package contents">
+          <div class="tree-header"><span></span><span></span><span></span><strong>IW-Spatial-Context-1.0.RC3</strong></div>
+          <ul>
+            <li><span class="folder-icon">▾</span><strong>src</strong></li>
+            <li class="nested"><span class="file-icon">⌁</span>Refresh-Spatial-Context.pawscript</li>
+            <li><span class="folder-icon">▾</span><strong>tools</strong></li>
+            <li class="nested"><span class="file-icon">⌘</span>build_spatial_context.py</li>
+            <li><span class="file-icon yaml">Y</span>world-geography.yaml</li>
+            <li><span class="file-icon yaml">Y</span>world-spatial.yaml</li>
+            <li><span class="file-icon json">{ }</span>IW-Spatial-Context-Bundle.json</li>
+            <li><span class="file-icon doc">D</span>IW-Spatial-Context-Reference.html</li>
+            <li><span class="file-icon">#</span>README.md</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-section">
+      <div class="shell">
+        <div class="closing-card" data-reveal>
+          <div class="closing-pin" aria-hidden="true">
+            <img src="assets/iw-spatial-logo.png" width="160" height="160" alt="">
+          </div>
+          <div>
+            <p class="eyebrow light-eyebrow"><span></span> Start mapping</p>
+            <h2>Your world already has places.<br>Now let them relate.</h2>
+            <p>Read the integration guide, inspect the schema, and adapt the included sample world to your own geography.</p>
+          </div>
+          <div class="closing-actions">
+            <a class="button button-light" data-link="docs" href="docs/index.html">Read documentation <span>→</span></a>
+            <a class="button button-ghost" data-link="github" href="https://github.com/your-account/iw-spatial-toolkit">View on GitHub <span>↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div class="footer-brand">
+        <img src="assets/iw-spatial-logo.png" width="38" height="38" alt="">
+        <div><strong>IW Spatial Toolkit</strong><small>Spatial authoring for Infinite Worlds</small></div>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a data-link="docs" href="docs/index.html">Documentation</a>
+        <a data-link="download" href="downloads/IW-Spatial-Context-1.0.RC3.zip">Download</a>
+        <a data-link="github" href="https://github.com/your-account/iw-spatial-toolkit">GitHub</a>
+      </nav>
+      <p>Release candidate · Schema 1.2<br>© <span data-year>2026</span> IW Spatial</p>
+    </div>
+  </footer>
+</body>
+</html>

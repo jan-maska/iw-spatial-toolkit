@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IW Spatial Context 1.0.RC3 Reference</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#edf2f0; --panel:#fff; --ink:#17211f; --muted:#52635f; --line:#cbd7d3; --accent:#126b58; --accent2:#8b5a13; --code:#10211d; --code-ink:#dff7ed; --tip:#e0f3ec; --warn:#fff2d8; --shadow:0 10px 26px rgba(22,48,41,.10); }
+    @media (prefers-color-scheme: dark) { :root { --bg:#0f1715; --panel:#17211f; --ink:#e6efec; --muted:#a9bab5; --line:#33443f; --accent:#6ed0b7; --accent2:#efbc6c; --code:#09110f; --code-ink:#dff7ed; --tip:#16372e; --warn:#3d301a; --shadow:none; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.58 system-ui,-apple-system,Segoe UI,sans-serif; }
+    a { color:var(--accent); }
+    code, pre { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+    code { font-size:.92em; }
+    .layout { display:grid; grid-template-columns:280px minmax(0,920px); gap:28px; max-width:1240px; margin:auto; padding:24px; }
+    aside { position:sticky; top:18px; align-self:start; max-height:calc(100vh - 36px); overflow:auto; padding:20px; background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); }
+    .brand { display:flex; gap:11px; align-items:center; margin-bottom:16px; }
+    .mark { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; background:var(--accent); color:#fff; font-weight:800; }
+    .brand strong,.brand small { display:block; }
+    .brand small { color:var(--muted); }
+    .search { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); }
+    nav { margin-top:14px; }
+    nav a { display:block; padding:7px 9px; color:var(--muted); text-decoration:none; border-radius:8px; }
+    nav a:hover { color:var(--ink); background:var(--bg); }
+    main { min-width:0; }
+    .hero,.doc-section { background:var(--panel); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); }
+    .hero { padding:40px; margin-bottom:22px; background:linear-gradient(135deg,var(--panel),color-mix(in srgb,var(--tip) 65%,var(--panel))); }
+    .hero h1 { margin:.15em 0; font-size:clamp(2rem,5vw,3.5rem); line-height:1.05; }
+    .hero p { max-width:700px; font-size:1.08rem; color:var(--muted); }
+    .badge { display:inline-block; margin:4px 5px 0 0; padding:5px 10px; border-radius:999px; background:var(--accent); color:#fff; font-size:.82rem; font-weight:700; }
+    .badge.alt { background:var(--accent2); }
+    .doc-section { padding:30px; margin-bottom:22px; }
+    h2 { margin-top:0; font-size:1.65rem; }
+    h3 { margin-top:1.5em; }
+    .lead { color:var(--muted); font-size:1.05rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; }
+    .card { padding:16px; border:1px solid var(--line); border-radius:13px; background:color-mix(in srgb,var(--panel) 90%,var(--bg)); }
+    .card strong { display:block; margin-bottom:4px; }
+    .tip,.warning { padding:15px 17px; border-radius:12px; border-left:5px solid var(--accent); background:var(--tip); }
+    .warning { border-left-color:var(--accent2); background:var(--warn); }
+    table { border-collapse:collapse; width:100%; display:block; overflow:auto; }
+    th,td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-size:.85rem; text-transform:uppercase; letter-spacing:.04em; }
+    pre { position:relative; overflow:auto; padding:18px; border-radius:12px; background:var(--code); color:var(--code-ink); line-height:1.45; }
+    .copy { float:right; margin:0 0 8px 12px; border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:var(--bg); color:var(--ink); cursor:pointer; }
+    details { border:1px solid var(--line); border-radius:12px; margin:12px 0; }
+    summary { padding:14px 16px; cursor:pointer; font-weight:700; }
+    details > div { padding:0 16px 16px; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps > li { counter-increment:step; position:relative; padding:0 0 20px 52px; min-height:44px; }
+    .steps > li::before { content:counter(step); position:absolute; left:0; top:0; display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:var(--accent); color:#fff; font-weight:800; }
+    .steps > li:not(:last-child)::after { content:""; position:absolute; left:16px; top:38px; bottom:3px; border-left:2px solid var(--line); }
+    .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:16px 0; }
+    .flow span { padding:8px 11px; border:1px solid var(--line); border-radius:9px; background:var(--bg); }
+    .flow b { color:var(--muted); }
+    .hidden-by-search { display:none; }
+    footer { padding:12px 0 40px; color:var(--muted); text-align:center; }
+    @media (max-width:850px) { .layout { display:block; padding:14px; } aside { position:relative; top:0; max-height:none; margin-bottom:18px; } nav { columns:2; } .hero,.doc-section { padding:23px; } }
+    @media print { body { background:#fff; color:#000; font-size:11pt; } aside,.copy { display:none; } .layout { display:block; max-width:none; padding:0; } .hero,.doc-section { border:0; box-shadow:none; break-inside:avoid; } pre { white-space:pre-wrap; color:#000; background:#f3f3f3; } a { color:#000; text-decoration:none; } }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand"><div class="mark">IW</div><div><strong>Spatial Context</strong><small>Reference 1.0.RC3</small></div></div>
+    <input id="search" class="search" type="search" placeholder="Search paths, rivers, import…" aria-label="Search reference">
+    <nav aria-label="Reference sections">
+      <a href="#overview">Overview</a>
+      <a href="#beginner">Beginner guide</a>
+      <a href="#merge">Catalog merge</a>
+      <a href="#files">Package files</a>
+      <a href="#coordinates">Coordinates</a>
+      <a href="#free-roam">Free roaming</a>
+      <a href="#geography">Points &amp; paths</a>
+      <a href="#spatial">Locations &amp; areas</a>
+      <a href="#runtime">Runtime model</a>
+      <a href="#integration">Manual integration</a>
+      <a href="#validation">Validation</a>
+      <a href="#migration">RC2 migration</a>
+      <a href="#limits">Boundaries</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <span class="badge">Package 1.0.RC3</span><span class="badge alt">Schema 1.2</span>
+      <h1>A consistent world, one local slice at a time.</h1>
+      <p>Coordinate-first free roaming, polygonal areas and typed paths for roads, trails, rivers, creeks and streams—compiled into hidden Infinite Worlds trackers with a compact Narrator-facing context.</p>
+    </header>
+
+    <section class="doc-section" id="overview">
+      <h2>What this package does</h2>
+      <div class="grid">
+        <div class="card"><strong>Global consistency</strong>Stores the full authored map and semantic catalog.</div>
+        <div class="card"><strong>Free roaming</strong>Coordinates remain valid between named places and away from authored paths.</div>
+        <div class="card"><strong>3D travel</strong>Calculates distance, elevation change, grade and slope character.</div>
+        <div class="card"><strong>Flow-aware water</strong>Uses ordered points to distinguish downstream from upstream.</div>
+      </div>
+      <p class="tip"><strong>Important:</strong> the compiled JSON is a portable data bank, not a complete IW world. Its components must be merged into a full world export.</p>
+    </section>
+
+    <section class="doc-section" id="beginner">
+      <h2>Beginner guide: build your first spatial IW world</h2>
+      <p class="lead">You do not need to understand IW’s internal JSON first. The easiest path is to let an authoring-capable AI assemble the full world, then review and test it.</p>
+
+      <h3>Part A — Prepare the idea</h3>
+      <ol class="steps">
+        <li><strong>Write a short game brief.</strong> Include the premise, player role, tone, content boundaries, important activities, and whether the story is ongoing or has an ending.</li>
+        <li><strong>List the first map essentials.</strong> Name the starting place, two or three nearby places, the first political region, major terrain, and at least one road or waterway.</li>
+        <li><strong>Choose a rough origin.</strong> Put <code>(0.00, 0.00)</code> southwest of the playable area. X increases east and Y increases north. Exact real-world surveying is unnecessary.</li>
+      </ol>
+
+      <h3>Part B — Use the easiest AI-assisted workflow</h3>
+      <ol class="steps">
+        <li>Give the AI the IW Builder <code>full-package.zip</code> and this Spatial Context package.</li>
+        <li>Ask it to read <code>Authoring-Prompt.md</code>, customize the two spatial YAML files, compile the bank, merge its components into a complete world, and validate the final export.</li>
+        <li>Review the proposed map origin, stable IDs, area containment and water direction. Correct concepts now; coordinates can remain approximate.</li>
+        <li>Keep the returned complete world JSON and customized spatial package together. The JSON runs the world; the YAML remains your editable map source.</li>
+      </ol>
+      <button class="copy" data-copy="starter-prompt">Copy prompt</button>
+      <pre id="starter-prompt">BUILD a complete Infinite Worlds game from this brief: [your idea].
+Use IW Spatial Context 1.0.RC3. Customize world-geography.yaml and
+world-spatial.yaml, compile the bundle, merge every component into the
+complete world, preserve all six spatial tracker variable names, and validate
+the final IW export. Explain the starting coordinates, optional location
+anchor, nearby-path lookup and host movement-update mechanism.</pre>
+
+      <h3>Part C — Edit the map in a dependable order</h3>
+      <ol class="steps">
+        <li><strong>Areas first:</strong> draw simplified polygons in <code>world-geography.yaml</code>, then give them meaning under <code>areas:</code> in <code>world-spatial.yaml</code>.</li>
+        <li><strong>Named places:</strong> write each place under <code>locations:</code>, then add its coordinates under <code>location_points:</code> using the same ID.</li>
+        <li><strong>Linear features:</strong> add roads, trails and waterways under <code>paths:</code>. Always set <code>type</code>.</li>
+        <li><strong>Water direction:</strong> order every river, creek and stream from upstream to downstream. Elevation should normally fall along the sequence.</li>
+        <li><strong>Relationships:</strong> use <code>path_ids</code> only for exact named intersections. Area membership and nearby locations are calculated from coordinates.</li>
+        <li><strong>Starting state:</strong> give <code>initial_navigation</code> authoritative XYZ coordinates, an optional location anchor and an optional active segment.</li>
+        <li><strong>Compile:</strong> run <code>python tools/build_spatial_context.py</code>. Fix errors; read warnings rather than ignoring them.</li>
+      </ol>
+
+      <h3>Part D — Put the world into Infinite Worlds</h3>
+      <ol class="steps">
+        <li>Start from <code>World-Template.json</code> or export an existing world.</li>
+        <li>Merge every compiled bank component into that complete JSON. An AI can do this; do not paste the bank itself into IW.</li>
+        <li>In the IW editor, enable optional features, advanced/miscellaneous features if needed, and raw JSON.</li>
+        <li>Export a backup. Import replaces the whole base-world definition.</li>
+        <li>Paste the complete merged JSON without Markdown fences or a blank line after the final brace. Choose <strong>Import JSON to world</strong> and save.</li>
+        <li>Start a new playthrough. Existing live copies do not inherit later edits to the base world.</li>
+      </ol>
+
+      <h3>Part E — First-play test</h3>
+      <div class="grid">
+        <div class="card"><strong>Startup</strong>Starting coordinates and containing areas appear.</div>
+        <div class="card"><strong>Free roam</strong>A coordinate between named places remains ready.</div>
+        <div class="card"><strong>Alongside</strong>A road is detected without making it active.</div>
+        <div class="card"><strong>Road</strong>Forward and reverse travel invert ascent/descent correctly.</div>
+        <div class="card"><strong>River</strong>Forward is downstream; reverse is upstream.</div>
+        <div class="card"><strong>Discovery</strong>Undiscovered nearby locations remain absent.</div>
+        <div class="card"><strong>Waypoint</strong>Role and along-path distance are correct.</div>
+        <div class="card"><strong>Recovery</strong>A stale location anchor is rejected without losing coordinate context.</div>
+      </div>
+    </section>
+
+    <section class="doc-section" id="merge">
+      <h2>Why locations and areas share one source</h2>
+      <table>
+        <thead><tr><th>Question</th><th>RC3 answer</th></tr></thead>
+        <tbody>
+          <tr><td>Does one source increase model cost?</td><td>No. The source is compiled into hidden trackers; only Spatial Local Context is AI-visible.</td></tr>
+          <tr><td>Does PawScript parse one large combined catalog?</td><td>No. The compiler splits <code>locations</code> and <code>areas</code> into separate runtime tracker values.</td></tr>
+          <tr><td>What becomes easier?</td><td>One semantic resource file, one metadata header and simpler authoring handoff.</td></tr>
+          <tr><td>What becomes riskier?</td><td>A YAML syntax or duplicate-key error can block both catalogs. The compiler catches this before integration.</td></tr>
+          <tr><td>What about enormous worlds?</td><td>Eventually shard by region; IW’s maximum practical hidden-tracker size has not been established.</td></tr>
+        </tbody>
+      </table>
+      <p class="warning"><strong>Design boundary:</strong> merge the source, not the runtime responsibilities. This keeps authoring convenient without making every runtime read larger.</p>
+    </section>
+
+    <section class="doc-section" id="files">
+      <h2>Package files</h2>
+      <table><thead><tr><th>File</th><th>Use</th></tr></thead><tbody>
+        <tr><td><code>world-geography.yaml</code></td><td>Coordinates, query settings, typed paths and polygon geometry.</td></tr>
+        <tr><td><code>world-spatial.yaml</code></td><td>Location descriptions and semantic areas.</td></tr>
+        <tr><td><code>IW-Spatial-Context-Bundle.json</code></td><td>Compiled portable bank whose components are merged into a complete IW world.</td></tr>
+        <tr><td><code>IW-Spatial-Context-Bundle.template.json</code></td><td>Uncompiled component template.</td></tr>
+        <tr><td><code>src/Refresh-Spatial-Context.pawscript</code></td><td>Maintenance source; embedded during compilation.</td></tr>
+        <tr><td><code>tools/build_spatial_context.py</code></td><td>Validator, sparse-index builder and compiler; requires Python and PyYAML.</td></tr>
+        <tr><td><code>IW-Spatial-Context.md</code></td><td>Exact builder contract and field semantics.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="doc-section" id="coordinates">
+      <h2>Metric 3D coordinates</h2>
+      <div class="grid">
+        <div class="card"><strong><code>x_km</code></strong>Kilometres east of the map origin.</div>
+        <div class="card"><strong><code>y_km</code></strong>Kilometres north of the map origin.</div>
+        <div class="card"><strong><code>z_m</code></strong>Metres above the chosen elevation datum.</div>
+        <div class="card"><strong>Precision</strong>Two XY decimals equal roughly 10 metres.</div>
+      </div>
+      <p>Store calculations in metric even if the setting presents miles or leagues. Approximate coordinates are usually more useful than false cartographic precision.</p>
+    </section>
+
+    <section class="doc-section" id="free-roam">
+      <h2>Free roaming: coordinates first</h2>
+      <p class="lead">The player no longer has to be “at Bramble Gate” or “on segment 2 of the King’s Road.” XYZ coordinates are always authoritative; named places and path progress are optional relationships.</p>
+      <div class="grid">
+        <div class="card"><strong>Absolute position</strong><code>x_km</code>, <code>y_km</code> and <code>z_m</code> are required.</div>
+        <div class="card"><strong>Location anchor</strong>Optional, and accepted only when it falls within the configured tolerance.</div>
+        <div class="card"><strong>Active path</strong>Optional. Use it for path-locked progress, grade and waypoints.</div>
+        <div class="card"><strong>Nearby paths</strong>Found automatically even when the player crosses or follows beside one.</div>
+      </div>
+      <h3>Free-roam state</h3>
+      <button class="copy" data-copy="free-roam-state">Copy</button>
+      <pre id="free-roam-state">x_km: 37.10
+y_km: 21.35
+z_m: 224
+position_mode: free_roam
+location_anchor: ""
+active_path: ""
+current_nav_index: 0
+next_nav_index: 0
+next_waypoint_nav_index: 0
+travel_direction: ""</pre>
+      <h3>What refresh derives</h3>
+      <table><thead><tr><th>Output</th><th>How it is resolved</th></tr></thead><tbody>
+        <tr><td><code>current_areas</code></td><td>Bounding-box prefilter followed by exact polygon and hole tests.</td></tr>
+        <tr><td><code>nearby_locations</code></td><td>Sparse-grid candidates, discovery state, exact distance, nearest-first limit.</td></tr>
+        <tr><td><code>nearby_paths</code></td><td>Projection onto candidate path segments and exact perpendicular distance.</td></tr>
+        <tr><td><code>current_location</code></td><td>Only a valid in-tolerance <code>location_anchor</code>.</td></tr>
+      </tbody></table>
+      <h3>Query settings</h3>
+      <pre>query_settings:
+  index_cell_km: 10.0
+  nearby_location_radius_km: 15.0
+  nearby_path_radius_km: 2.0
+  on_path_tolerance_km: 0.05
+  max_nearby_locations: 5
+  max_nearby_paths: 3
+  location_anchor_tolerance_km: 0.10</pre>
+      <p>The cell size controls candidate indexing, not map precision. Exact distances and polygon tests still use the full coordinates.</p>
+      <p class="warning"><strong>Movement ownership:</strong> the package calculates context from coordinates; it does not decide that prose such as “I walk north for an hour” has committed a particular position. Host-world logic must write the authoritative coordinates before refresh.</p>
+    </section>
+
+    <section class="doc-section" id="geography">
+      <h2>Location points and typed paths</h2>
+      <details open><summary>Location point</summary><div>
+        <button class="copy" data-copy="point-example">Copy</button>
+        <pre id="point-example">location_points:
+  stone_bridge:
+    x_km: 41.80
+    y_km: 24.40
+    z_m: 263
+    path_ids: [kings_road, river_vey]
+    # Areas and nearby places are coordinate-derived.</pre>
+      </div></details>
+      <details open><summary>Road path</summary><div>
+        <pre>paths:
+  kings_road:
+    name: King's Road
+    type: road
+    class: major_maintained
+    surface: fitted_stone_and_gravel
+    directionality: bidirectional
+    nav_points:
+      - id: kings_road_001
+        x_km: 28.00
+        y_km: 14.00
+        z_m: 140
+        cumulative_km: 0.00
+        location_id: southwatch_post
+        role: checkpoint</pre>
+      </div></details>
+      <details open><summary>River path</summary><div>
+        <pre>paths:
+  river_vey:
+    name: River Vey
+    type: river
+    class: perennial
+    navigability: shallow_boats_below_stone_bridge
+    nav_points:
+      # Ordered upstream to downstream
+      - {id: river_vey_001, x_km: 52.00, y_km: 34.00, z_m: 420, cumulative_km: 0.00}
+      - {id: river_vey_002, x_km: 45.50, y_km: 28.50, z_m: 318, cumulative_km: 8.51}</pre>
+        <p>For a natural water path, index order is flow direction. Forward means downstream; reverse means upstream.</p>
+      </div></details>
+    </section>
+
+    <section class="doc-section" id="spatial">
+      <h2>One semantic source, two collections</h2>
+      <pre>spatial_context:
+  package_version: "1.0.RC3"
+  schema_version: "1.2"
+  data_role: spatial
+
+locations:
+  bramble_gate:
+    name: Bramble Gate
+    kind: checkpoint
+    summary: A guarded roadside inn and customs post.
+    initial_state:
+      discovered: true
+      visited: true
+
+areas:
+  northern_crown:
+    name: Northern Crown
+    layer: political
+    kind: kingdom
+    geometry: northern_crown_extent
+    summary: A hereditary kingdom controlling the northern roads.
+    contains: [duchy_of_vey]</pre>
+      <p><code>contains</code> is semantic nesting, not subtraction. A lake is still in its continent; a duchy is still in its kingdom. Geometry <code>holes</code> are reserved for actual excluded space.</p>
+    </section>
+
+    <section class="doc-section" id="runtime">
+      <h2>Runtime data flow</h2>
+      <div class="flow"><span>Two YAML sources</span><b>→</b><span>Compiler + sparse index</span><b>→</b><span>Hidden catalogs</span><b>→</b><span>Coordinate query</span><b>→</b><span>AI-only local context</span></div>
+      <table><thead><tr><th>Tracker</th><th>Visibility</th><th>Purpose</th></tr></thead><tbody>
+        <tr><td><code>$spatial_geography</code></td><td>Hidden</td><td>Points, paths, geometry and compiled candidate index.</td></tr>
+        <tr><td><code>$spatial_locations</code></td><td>Hidden</td><td>Compiled location catalog.</td></tr>
+        <tr><td><code>$spatial_areas</code></td><td>Hidden</td><td>Compiled area catalog.</td></tr>
+        <tr><td><code>$spatial_location_state</code></td><td>Hidden</td><td>Mutable discovery and location state.</td></tr>
+        <tr><td><code>$spatial_navigation</code></td><td>Hidden</td><td>Host-owned authoritative position and path progress.</td></tr>
+        <tr><td><code>$spatial_context</code></td><td>AI only</td><td>Small current slice used by the Storyteller.</td></tr>
+      </tbody></table>
+      <h3>Navigation state</h3>
+      <pre>x_km: 34.25
+y_km: 18.70
+z_m: 195
+position_mode: path_following
+location_anchor: bramble_gate
+active_path: kings_road
+current_nav_index: 2
+next_nav_index: 3
+next_waypoint_nav_index: 4
+travel_direction: forward</pre>
+    </section>
+
+    <section class="doc-section" id="integration">
+      <h2>Manual integration details</h2>
+      <ol>
+        <li>Compile the two YAML sources.</li>
+        <li>Open a complete IW export and the compiled data bank.</li>
+        <li>Insert all six trackers, the instruction block and the refresh trigger into their native arrays.</li>
+        <li>Resolve native-ID collisions consistently.</li>
+        <li>Preserve the six tracker <code>variableName</code> values or rewrite every dependent script reference.</li>
+        <li>Give one host mechanism ownership of XYZ updates, and commit them before refresh when same-pass data is needed.</li>
+        <li>Validate the complete world, not only the bank.</li>
+        <li>Test a named location, free-roam coordinate, road-adjacent point, area boundary and active river in Sandbox and then in a new playthrough.</li>
+      </ol>
+      <p class="warning">Importing raw JSON replaces the complete base-world definition. Export a backup first.</p>
+    </section>
+
+    <section class="doc-section" id="validation">
+      <h2>Build and validation</h2>
+      <button class="copy" data-copy="build-command">Copy</button>
+      <pre id="build-command">python tools/build_spatial_context.py</pre>
+      <div class="grid">
+        <div class="card">YAML syntax and duplicate keys</div>
+        <div class="card">Metadata and metric coordinate convention</div>
+        <div class="card">Location, area, path and geometry references</div>
+        <div class="card">Nav order and cumulative distance</div>
+        <div class="card">Water elevation direction</div>
+        <div class="card">Query settings and compiled index size</div>
+        <div class="card">Initial coordinate and anchor consistency</div>
+        <div class="card">Containment references and cycles</div>
+      </div>
+      <p>Static checks cannot execute PawScript, prove trigger order or certify model behavior. Sandbox and live-play testing remain required.</p>
+    </section>
+
+    <section class="doc-section" id="migration">
+      <h2>RC2 → RC3 migration</h2>
+      <table><thead><tr><th>RC2</th><th>RC3</th></tr></thead><tbody>
+        <tr><td><code>current_location</code> is primary</td><td>XYZ is primary; optional <code>location_anchor</code> is validated against it</td></tr>
+        <tr><td><code>area_ids</code> caches</td><td>Dynamic polygon membership</td></tr>
+        <tr><td><code>nearby_ids</code> lists</td><td>Sparse-grid candidates plus exact distance</td></tr>
+        <tr><td>Paths known only when active or attached to a location</td><td>Dynamic <code>nearby_paths</code> with segment projection</td></tr>
+        <tr><td>No query configuration</td><td>Required <code>query_settings</code></td></tr>
+        <tr><td>Schema 1.1</td><td>Schema 1.2</td></tr>
+      </tbody></table>
+      <p>Rebuild the bundle after migration. Do not combine RC2 navigation state or PawScript with RC3.</p>
+    </section>
+
+    <section class="doc-section" id="limits">
+      <h2>RC3 boundaries</h2>
+      <ul>
+        <li>The host supplies elevation; no digital elevation model is interpolated.</li>
+        <li>Path proximity does not perform route finding or river-network traversal.</li>
+        <li>Area membership is 2D; elevation does not change polygon membership.</li>
+        <li>The host world owns authoritative coordinate changes and optional path progress.</li>
+        <li>Practical maximum hidden-tracker size is not established.</li>
+      </ul>
+    </section>
+
+    <footer>IW Spatial Context · Package 1.0.RC3 · Schema 1.2 · Self-contained reference</footer>
+  </main>
+</div>
+<script>
+  const search = document.querySelector('#search');
+  const sections = [...document.querySelectorAll('.doc-section')];
+  search.addEventListener('input', () => {
+    const query = search.value.trim().toLowerCase();
+    sections.forEach(section => section.classList.toggle('hidden-by-search', Boolean(query) && !section.textContent.toLowerCase().includes(query)));
+  });
+  document.querySelectorAll('[data-copy]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const target = document.getElementById(button.dataset.copy);
+      try {
+        await navigator.clipboard.writeText(target.innerText);
+        const previous = button.textContent;
+        button.textContent = 'Copied';
+        setTimeout(() => { button.textContent = previous; }, 1200);
+      } catch (_) {
+        button.textContent = 'Select and copy';
+      }
+    });
+  });
+</script>
+</body>
+</html>
