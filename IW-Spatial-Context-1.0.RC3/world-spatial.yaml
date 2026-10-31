@@ -1,0 +1,201 @@
+spatial_context:
+  package_version: "1.0.RC3"
+  schema_version: "1.2"
+  data_role: spatial
+
+# Author-facing semantic catalog. The compiler splits these two collections
+# into separate hidden runtime trackers so one large source file does not
+# increase Storyteller context or couple runtime reads.
+locations:
+  southwatch_post:
+    name: Southwatch Post
+    kind: checkpoint
+    summary: A modest road post guarding the southern approach to the Vey foothills.
+    description: >
+      A timber guardhouse, a smithy and a low inn stand around a hard-packed
+      wagon yard. Southbound traffic thins here before the open plain.
+    atmosphere:
+      - Hammer blows from the smithy
+      - Dusty wagons and tired draft animals
+      - Relaxed guards who become alert after dark
+    landmarks:
+      - name: Southwatch Beacon
+        description: A timber signal tower visible across the plain.
+    services:
+      - Lodging
+      - Stabling
+      - Smithing
+    narrative_constraints:
+      - The post records commercial wagons but rarely searches private travellers.
+    initial_state:
+      discovered: true
+      visited: false
+      condition: operational
+      controlling_faction: royal_wardens
+      temporary_changes: []
+
+  bramble_gate:
+    name: Bramble Gate
+    kind: checkpoint
+    summary: A guarded roadside inn and customs post where the King's Road enters the wooded foothills.
+    description: >
+      Bramble Gate consists of a long stone inn, a walled stable yard and a
+      squat guardhouse built against an older boundary wall. Travellers arriving
+      from the south first see its lantern tower above the hawthorn hedges.
+    atmosphere:
+      - Woodsmoke and wet leaves
+      - Constant wagon traffic during daylight
+      - Wary but professional road guards
+    landmarks:
+      - name: Lantern Tower
+        description: Visible above the trees from several kilometres away.
+      - name: Old Boundary Wall
+        description: Predates the present kingdom and bears defaced inscriptions.
+    services:
+      - Lodging
+      - Stabling
+      - Basic repairs
+      - Customs inspection
+    narrative_constraints:
+      - Guards record every northbound commercial wagon.
+      - The checkpoint cannot be bypassed without leaving the maintained road.
+    initial_state:
+      discovered: true
+      visited: true
+      condition: operational
+      controlling_faction: royal_wardens
+      temporary_changes: []
+
+  stone_bridge:
+    name: Stone Bridge
+    kind: landmark
+    summary: A broad, old bridge carrying the King's Road across the River Vey.
+    description: >
+      Three weathered arches cross a fast, slate-coloured river below wooded
+      slopes. A narrow shrine occupies the upstream parapet.
+    atmosphere:
+      - Constant water noise
+      - Damp stone and river mist
+      - Travellers slowing to inspect the road ahead
+    landmarks:
+      - name: Parapet Shrine
+        description: A small roofed niche containing votive ribbons and river stones.
+    services: []
+    narrative_constraints:
+      - Wagons cannot cross when the central arch is formally closed.
+    initial_state:
+      discovered: true
+      visited: false
+      condition: open
+      controlling_faction: royal_wardens
+      temporary_changes: []
+
+  foxglove_post:
+    name: Foxglove Post
+    kind: checkpoint
+    summary: A fortified inn and relay stable near the upper edge of the Blackpine Forest.
+    description: >
+      Foxglove Post is built around a square courtyard with a stone inn on one
+      side and a compact guard barracks on the other. Purple foxgloves grow along
+      the old drainage ditches in summer.
+    atmosphere:
+      - Resin, horse sweat and kitchen herbs
+      - Bells announcing arriving couriers
+      - More soldiers than civilians after sunset
+    landmarks:
+      - name: Relay Bell
+        description: A bronze bell used to call fresh horses for royal couriers.
+    services:
+      - Lodging
+      - Stabling
+      - Courier relay
+      - Guard escort requests
+    narrative_constraints:
+      - Fresh relay horses are reserved for credentialed couriers.
+    initial_state:
+      discovered: true
+      visited: false
+      condition: operational
+      controlling_faction: royal_wardens
+      temporary_changes: []
+
+areas:
+  eldren:
+    name: Eldren
+    layer: physical
+    kind: continent
+    geometry: eldren_extent
+    summary: A temperate continent divided by a central mountain spine.
+    description: >
+      Eldren stretches from western rain coasts to dry interior uplands. The
+      River Vey drains much of its northern heartland.
+    contains:
+      - lake_arthen
+      - northern_crown
+      - eastern_foothills
+      - blackpine_forest
+
+  lake_arthen:
+    name: Lake Arthen
+    layer: hydrological
+    kind: lake
+    geometry: lake_arthen_extent
+    summary: A cold inland lake within western Eldren.
+    description: >
+      Lake Arthen occupies a deep basin and remains part of Eldren even though
+      it is a distinct hydrological area.
+    contains: []
+
+  northern_crown:
+    name: Northern Crown
+    layer: political
+    kind: kingdom
+    geometry: northern_crown_extent
+    summary: A hereditary kingdom controlling the northern roads and the Vey basin.
+    description: >
+      The Northern Crown maintains guarded highways, relay posts and customs
+      houses throughout its core territories.
+    contains:
+      - duchy_of_vey
+
+  duchy_of_vey:
+    name: Duchy of Vey
+    layer: political
+    kind: duchy
+    geometry: duchy_of_vey_extent
+    summary: A road-rich duchy centred on the River Vey and its eastern foothills.
+    description: >
+      The duchy administers the King's Road checkpoints and collects commercial
+      tolls for the Northern Crown.
+    contains: []
+
+  eastern_foothills:
+    name: Eastern Foothills
+    layer: terrain
+    kind: foothills
+    geometry: eastern_foothills_extent
+    summary: Rolling wooded uplands rising east of the Vey plain.
+    description: >
+      Long ridges, shallow valleys and frequent streams make cross-country travel
+      slower than the maintained road suggests.
+    terrain:
+      minimum_elevation_m: 120
+      maximum_elevation_m: 950
+      traversal: moderate
+    contains: []
+
+  blackpine_forest:
+    name: Blackpine Forest
+    layer: biome
+    kind: forest
+    geometry: blackpine_forest_extent
+    summary: An old conifer forest occupying the northern foothills.
+    description: >
+      Dense black-barked pines reduce long sightlines and keep the forest floor
+      cool even during summer.
+    terrain:
+      minimum_elevation_m: 170
+      maximum_elevation_m: 780
+      traversal: difficult_off_road
+      dominant_cover: dense_conifer
+    contains: []

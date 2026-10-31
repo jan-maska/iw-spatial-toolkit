@@ -1,0 +1,18 @@
+{
+  "name": "IW Spatial Context",
+  "packageVersion": "1.0.RC3",
+  "schemaVersion": "1.2",
+  "status": "release-candidate",
+  "files": {
+    "CHANGELOG.md": "59573e706e4ec0d57d50ecfd5889df1f4386b58d2c2a46efcee4be3e58f7778e",
+    "IW-Spatial-Context-Bundle.json": "9deda10fb384269a8e9dd7e1ce878084a398e52c09c461c3e8d411643ebe3a59",
+    "IW-Spatial-Context-Bundle.template.json": "5237195e0e5f0dfe9646ce7ba19febce31cde1f5a810cd56f4656bcd8b60e0fd",
+    "IW-Spatial-Context-Reference.html": "b1317e08cc38b922648f59e5a5b21d0269e23ff57c72420c919333e8ab1b9af5",
+    "IW-Spatial-Context.md": "a7b1018d1c46e920dabcdd2898f8c5543362fc34c8c9648f7967e08a3af389c9",
+    "README.md": "d349f7cdd5ca61984fc3d1a190d92f905e97382ec9452605c78e220badfa0b3a",
+    "src/Refresh-Spatial-Context.pawscript": "b45f6f0f72893edf6b28ef979c738dbaa8e98fd364a141300284377325252530",
+    "tools/build_spatial_context.py": "539a70aac00b1e6edf0eda2f461fe12b59e18c71f4a9e007652452f2fc996dcb",
+    "world-geography.yaml": "d67806fc4f001556e5a7cd1abfcf8a56abf5f49affa0272300469a5c49c2bbea",
+    "world-spatial.yaml": "0780ea869878a1b346a4d25dc8485a67730cdd29ee1a8acc71bc88154068a8e5"
+  }
+}

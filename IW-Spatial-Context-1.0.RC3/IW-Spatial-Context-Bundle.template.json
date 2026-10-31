@@ -1,0 +1,198 @@
+{
+  "format": "iw-data-bank",
+  "version": 1,
+  "package": {
+    "name": "IW Spatial Context",
+    "packageVersion": "1.0.RC3",
+    "schemaVersion": "1.2",
+    "status": "release-candidate",
+    "compiled": false,
+    "scriptSource": "src/Refresh-Spatial-Context.pawscript",
+    "sourceDigests": {}
+  },
+  "entries": [
+    {
+      "id": "iw-spatial-context-1.0.rc3",
+      "title": "IW Spatial Context 1.0.RC3",
+      "kind": "bundle",
+      "summary": "Coordinate-first free roaming, hidden spatial catalogs, typed paths and a compact AI-only local context for Infinite Worlds.",
+      "tags": [
+        "Infinite Worlds",
+        "spatial context",
+        "geography",
+        "PawScript"
+      ],
+      "dependencies": {
+        "included": [],
+        "external": [
+          "Host-world logic must update the $spatial_navigation tracker when authoritative movement occurs.",
+          "The two YAML source files must be compiled into the bundle before integration.",
+          "The destination world must preserve the six declared tracker variableName values or rewrite every dependent PawScript reference."
+        ],
+        "unresolved": [
+          "RC3 coordinate queries and PawScript composition require Sandbox and live-world runtime certification.",
+          "Engine limits for very large hidden YAML trackers are not established."
+        ]
+      },
+      "configuration": {
+        "inputFiles": [
+          "world-geography.yaml",
+          "world-spatial.yaml"
+        ],
+        "hostOwnedTracker": "spatial_navigation",
+        "packageOwnedOutput": "spatial_context",
+        "triggerOrdering": "Place host navigation commits before Refresh Spatial Context when same-pass visibility is required."
+      },
+      "components": [
+        {
+          "kind": "trackedItem",
+          "payload": {
+            "id": "SpGeo1001",
+            "name": "Spatial Geography Catalog",
+            "positionInList": 0,
+            "dataType": "yaml",
+            "visibility": "hidden",
+            "description": "Complete coordinate, typed-path and polygon geometry catalog with a compiler-generated sparse query index. Hidden from the player and Storyteller; script-readable.",
+            "updateInstructions": "",
+            "formatExample": "",
+            "enforceFormat": false,
+            "formatSchema": "",
+            "initialValue": "__WORLD_GEOGRAPHY_YAML__",
+            "initialValueBasedOnPC": "same",
+            "autoUpdate": false,
+            "variableName": "spatial_geography",
+            "driftAcknowledgedForName": "Spatial Geography Catalog"
+          }
+        },
+        {
+          "kind": "trackedItem",
+          "payload": {
+            "id": "SpLoc1001",
+            "name": "Spatial Location Catalog",
+            "positionInList": 1,
+            "dataType": "yaml",
+            "visibility": "hidden",
+            "description": "Complete static narrative definitions for point-like locations, compiled from world-spatial.yaml.",
+            "updateInstructions": "",
+            "formatExample": "",
+            "enforceFormat": false,
+            "formatSchema": "",
+            "initialValue": "__WORLD_LOCATIONS_YAML__",
+            "initialValueBasedOnPC": "same",
+            "autoUpdate": false,
+            "variableName": "spatial_locations",
+            "driftAcknowledgedForName": "Spatial Location Catalog"
+          }
+        },
+        {
+          "kind": "trackedItem",
+          "payload": {
+            "id": "SpArea101",
+            "name": "Spatial Area Catalog",
+            "positionInList": 2,
+            "dataType": "yaml",
+            "visibility": "hidden",
+            "description": "Complete static semantic definitions for physical, political and other areas, compiled from world-spatial.yaml.",
+            "updateInstructions": "",
+            "formatExample": "",
+            "enforceFormat": false,
+            "formatSchema": "",
+            "initialValue": "__WORLD_AREAS_YAML__",
+            "initialValueBasedOnPC": "same",
+            "autoUpdate": false,
+            "variableName": "spatial_areas",
+            "driftAcknowledgedForName": "Spatial Area Catalog"
+          }
+        },
+        {
+          "kind": "trackedItem",
+          "payload": {
+            "id": "SpState01",
+            "name": "Spatial Location State",
+            "positionInList": 3,
+            "dataType": "yaml",
+            "visibility": "hidden",
+            "description": "Mutable per-location overlay for discovery, visits, condition, control and temporary changes.",
+            "updateInstructions": "",
+            "formatExample": "",
+            "enforceFormat": false,
+            "formatSchema": "",
+            "initialValue": "__LOCATION_STATE_YAML__",
+            "initialValueBasedOnPC": "same",
+            "autoUpdate": false,
+            "variableName": "spatial_location_state",
+            "driftAcknowledgedForName": "Spatial Location State"
+          }
+        },
+        {
+          "kind": "trackedItem",
+          "payload": {
+            "id": "SpNav1001",
+            "name": "Spatial Navigation State",
+            "positionInList": 4,
+            "dataType": "yaml",
+            "visibility": "hidden",
+            "description": "Authoritative host-owned XYZ position with optional named-location anchor and optional active-path progress. Update through host-world triggers or scripts.",
+            "updateInstructions": "",
+            "formatExample": "",
+            "enforceFormat": false,
+            "formatSchema": "",
+            "initialValue": "__NAVIGATION_STATE_YAML__",
+            "initialValueBasedOnPC": "same",
+            "autoUpdate": false,
+            "variableName": "spatial_navigation",
+            "driftAcknowledgedForName": "Spatial Navigation State"
+          }
+        },
+        {
+          "kind": "trackedItem",
+          "payload": {
+            "id": "SpCtx1001",
+            "name": "Spatial Local Context",
+            "positionInList": 5,
+            "dataType": "yaml",
+            "visibility": "ai_only",
+            "description": "Compact authoritative spatial slice for absolute position, optional current location, containing areas, nearby places and nearby or active paths.",
+            "updateInstructions": "",
+            "formatExample": "",
+            "enforceFormat": false,
+            "formatSchema": "",
+            "initialValue": "package_version: 1.0.RC3\nschema_version: '1.2'\nstatus: awaiting_refresh\nposition: {}\ncurrent_location: {}\ncurrent_areas: []\nnearby_locations: []\nnearby_paths: []\nactive_path: {}",
+            "initialValueBasedOnPC": "same",
+            "autoUpdate": false,
+            "variableName": "spatial_context",
+            "driftAcknowledgedForName": "Spatial Local Context"
+          }
+        },
+        {
+          "kind": "instructionBlock",
+          "payload": {
+            "id": "blk-spatial-context-rules",
+            "name": "Spatial Context Rules",
+            "content": "#SPATIAL_CONTEXT\nTreat the AI-only Spatial Local Context tracked item as authoritative for absolute position, containing areas, nearby named places and nearby or active paths. A blank current_location means the player is between named places; it does not invalidate the coordinates. Use nearby_paths.relation to distinguish being on, alongside or merely near a road or waterway. Use current-location description and atmosphere only when a validated location anchor is present. Do not invent maintained roads, waterways, crossings, checkpoints, political membership or geographic access that contradicts the context. For river, creek and stream paths, increasing sequence runs downstream. A nearby entry is not necessarily visible or reachable unless terrain allows it. Never reveal undiscovered information merely because a hidden catalog contains it. When status is uninitialized, avoid precise geography until the host restores XYZ coordinates. Spatial updates committed after narration guide the following turn; do not retroactively claim that an already narrated event used newer state."
+          }
+        },
+        {
+          "kind": "triggerEvent",
+          "payload": {
+            "id": "trg-refresh-spatial-context",
+            "name": "Refresh Spatial Context",
+            "triggerConditions": [],
+            "triggerEffects": [
+              {
+                "type": "effectRunScript",
+                "name": "Assemble Local Spatial Context",
+                "id": "node-refresh-spatial-context-1",
+                "data": "__REFRESH_SPATIAL_CONTEXT_PAWSCRIPT__"
+              }
+            ],
+            "triggerOnStartOfGame": true,
+            "triggerMidGame": true,
+            "canTriggerMoreThanOnce": true,
+            "advancedLogic": false
+          }
+        }
+      ]
+    }
+  ]
+}

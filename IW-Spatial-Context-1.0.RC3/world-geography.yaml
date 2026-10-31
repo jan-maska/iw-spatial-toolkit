@@ -1,0 +1,168 @@
+spatial_context:
+  package_version: "1.0.RC3"
+  schema_version: "1.2"
+  data_role: geography
+
+coordinate_system:
+  x_unit: kilometer
+  y_unit: kilometer
+  z_unit: meter
+  x_direction: east
+  y_direction: north
+  elevation_datum: mean_sea_level
+  horizontal_precision_km: 0.01
+
+# The compiler builds a hidden sparse grid from these settings. Runtime queries
+# still calculate exact distance and polygon membership before exposing results.
+query_settings:
+  index_cell_km: 10.0
+  nearby_location_radius_km: 15.0
+  nearby_path_radius_km: 2.0
+  on_path_tolerance_km: 0.05
+  max_nearby_locations: 5
+  max_nearby_paths: 3
+  location_anchor_tolerance_km: 0.10
+
+location_points:
+  southwatch_post:
+    x_km: 28.00
+    y_km: 14.00
+    z_m: 140
+    path_ids: [kings_road]
+
+  bramble_gate:
+    x_km: 34.25
+    y_km: 18.70
+    z_m: 195
+    path_ids: [kings_road]
+
+  stone_bridge:
+    x_km: 41.80
+    y_km: 24.40
+    z_m: 263
+    path_ids: [kings_road, river_vey]
+
+  foxglove_post:
+    x_km: 47.25
+    y_km: 25.10
+    z_m: 282
+    path_ids: [kings_road]
+
+# A path is any ordered linear feature. For river, creek and stream types,
+# nav-point order is upstream to downstream. For roads and trails, order is
+# only the reference direction; directionality controls permitted travel.
+paths:
+  kings_road:
+    name: King's Road
+    type: road
+    class: major_maintained
+    surface: fitted_stone_and_gravel
+    directionality: bidirectional
+    nav_points:
+      - id: kings_road_001
+        x_km: 28.00
+        y_km: 14.00
+        z_m: 140
+        cumulative_km: 0.00
+        location_id: southwatch_post
+        role: checkpoint
+
+      - id: kings_road_002
+        x_km: 34.25
+        y_km: 18.70
+        z_m: 195
+        cumulative_km: 7.82
+        location_id: bramble_gate
+        role: checkpoint
+
+      - id: kings_road_003
+        x_km: 41.80
+        y_km: 24.40
+        z_m: 263
+        cumulative_km: 17.28
+        location_id: stone_bridge
+        role: crossing
+
+      - id: kings_road_004
+        x_km: 47.25
+        y_km: 25.10
+        z_m: 282
+        cumulative_km: 22.77
+        location_id: foxglove_post
+        role: checkpoint
+
+  river_vey:
+    name: River Vey
+    type: river
+    class: perennial
+    navigability: shallow_boats_below_stone_bridge
+    nav_points:
+      - id: river_vey_001
+        x_km: 52.00
+        y_km: 34.00
+        z_m: 420
+        cumulative_km: 0.00
+        role: upper_reach
+
+      - id: river_vey_002
+        x_km: 45.50
+        y_km: 28.50
+        z_m: 318
+        cumulative_km: 8.51
+        role: bend
+
+      - id: river_vey_003
+        x_km: 41.80
+        y_km: 24.40
+        z_m: 251
+        cumulative_km: 14.03
+        location_id: stone_bridge
+        role: crossing
+
+      - id: river_vey_004
+        x_km: 33.00
+        y_km: 18.50
+        z_m: 168
+        cumulative_km: 24.63
+        role: lower_reach
+
+polygons:
+  eldren_extent:
+    type: polygon
+    outer: [[0.00, 0.00], [80.00, 0.00], [85.00, 60.00], [0.00, 60.00]]
+
+  lake_arthen_extent:
+    type: polygon
+    outer: [[10.00, 10.00], [15.00, 9.50], [16.00, 14.00], [11.00, 15.00]]
+
+  northern_crown_extent:
+    type: polygon
+    outer: [[20.00, 5.00], [70.00, 5.00], [75.00, 45.00], [15.00, 45.00]]
+
+  duchy_of_vey_extent:
+    type: polygon
+    outer: [[25.00, 10.00], [60.00, 10.00], [60.00, 35.00], [25.00, 35.00]]
+
+  eastern_foothills_extent:
+    type: polygon
+    outer: [[30.00, 15.00], [65.00, 15.00], [65.00, 40.00], [30.00, 40.00]]
+
+  blackpine_forest_extent:
+    type: polygon
+    outer: [[32.00, 16.00], [55.00, 16.00], [58.00, 32.00], [32.00, 32.00]]
+
+multipolygons: {}
+
+# Coordinates are authoritative. The location anchor and active path are
+# optional relationships, not substitutes for position.
+initial_navigation:
+  x_km: 34.25
+  y_km: 18.70
+  z_m: 195
+  position_mode: path_following
+  location_anchor: bramble_gate
+  active_path: kings_road
+  current_nav_index: 2
+  next_nav_index: 3
+  next_waypoint_nav_index: 4
+  travel_direction: forward

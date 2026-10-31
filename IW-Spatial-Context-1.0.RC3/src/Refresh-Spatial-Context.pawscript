@@ -1,0 +1,283 @@
+# Development source. The compiler embeds this text in the bundle's Run Script effect.
+$spatial_context.package_version = "1.0.RC3"
+$spatial_context.schema_version = "1.2"
+$spatial_context.status = "uninitialized"
+$spatial_context.position = record()
+$spatial_context.current_location = record()
+$spatial_context.current_areas = list()
+$spatial_context.nearby_locations = list()
+$spatial_context.nearby_paths = list()
+$spatial_context.active_path = record()
+
+if not $spatial_navigation.x_km.exists() or not $spatial_navigation.y_km.exists() or not $spatial_navigation.z_m.exists()
+  $spatial_context.status = "uninitialized"
+else
+  set $position_x = $spatial_navigation.x_km
+  set $position_y = $spatial_navigation.y_km
+  set $position_z = $spatial_navigation.z_m
+  set $settings = $spatial_geography.query_settings
+  $spatial_context.status = "ready"
+  $spatial_context.position.x_km = $position_x
+  $spatial_context.position.y_km = $position_y
+  $spatial_context.position.z_m = $position_z
+  $spatial_context.position.mode = try($spatial_navigation.position_mode, "free_roam")
+
+  # A named location is optional and is accepted only when coordinates agree.
+  set $anchor_id = try($spatial_navigation.location_anchor, "")
+  set $resolved_anchor_id = ""
+  $spatial_context.position.location_anchor_status = "none"
+  if $anchor_id != ""
+    if not $spatial_geography.location_points.contains($anchor_id) or not $spatial_locations.locations.contains($anchor_id)
+      $spatial_context.position.location_anchor_status = "unknown"
+    else
+      set $anchor_geo = $spatial_geography.location_points.item($anchor_id)
+      set $anchor_dx = $anchor_geo.x_km - $position_x
+      set $anchor_dy = $anchor_geo.y_km - $position_y
+      set $anchor_distance = power($anchor_dx^2 + $anchor_dy^2, 0.5)
+      $spatial_context.position.location_anchor_distance_km = $anchor_distance.round(2)
+      if $anchor_distance <= $settings.location_anchor_tolerance_km
+        set $resolved_anchor_id = $anchor_id
+        set $detail = $spatial_locations.locations.item($anchor_id)
+        $spatial_context.position.location_anchor_status = "at_location"
+        $spatial_context.current_location.id = $anchor_id
+        $spatial_context.current_location.name = $detail.name
+        $spatial_context.current_location.kind = $detail.kind
+        $spatial_context.current_location.summary = $detail.summary
+        $spatial_context.current_location.description = try($detail.description, "")
+        $spatial_context.current_location.atmosphere = try($detail.atmosphere, list())
+        $spatial_context.current_location.landmarks = try($detail.landmarks, list())
+        $spatial_context.current_location.services = try($detail.services, list())
+        $spatial_context.current_location.narrative_constraints = try($detail.narrative_constraints, list())
+        $spatial_context.current_location.state = try($spatial_location_state.locations.item($anchor_id), record())
+      else
+        $spatial_context.position.location_anchor_status = "out_of_range"
+
+  # Resolve every polygonal area containing the authoritative XY coordinate.
+  for each $area_id in $spatial_areas.areas.keys()
+    set $area = $spatial_areas.areas.item($area_id)
+    set $geometry_id = $area.geometry
+    set $area_matches = false
+    if $spatial_geography.spatial_index.geometry_bounds.contains($geometry_id)
+      set $bounds = $spatial_geography.spatial_index.geometry_bounds.item($geometry_id)
+      if $position_x >= $bounds.min_x_km and $position_x <= $bounds.max_x_km and $position_y >= $bounds.min_y_km and $position_y <= $bounds.max_y_km
+        set $polygon_ids = list()
+        if $spatial_geography.polygons.contains($geometry_id)
+          $polygon_ids.append($geometry_id)
+        else if $spatial_geography.multipolygons.contains($geometry_id)
+          $polygon_ids = $spatial_geography.multipolygons.item($geometry_id).members
+        for each $polygon_id in $polygon_ids
+          set $polygon = $spatial_geography.polygons.item($polygon_id)
+          set $inside_outer = false
+          for each $edge in $polygon.runtime_outer_edges
+            set $crosses = ($edge.y1_km > $position_y) != ($edge.y2_km > $position_y)
+            if $crosses
+              set $intersection_x = try(($edge.x2_km - $edge.x1_km) * ($position_y - $edge.y1_km) / ($edge.y2_km - $edge.y1_km) + $edge.x1_km, $edge.x1_km)
+              if $position_x < $intersection_x
+                $inside_outer = not $inside_outer
+          if $inside_outer
+            set $inside_hole = false
+            for each $hole in $polygon.runtime_holes
+              set $inside_this_hole = false
+              for each $hole_edge in $hole.edges
+                set $hole_crosses = ($hole_edge.y1_km > $position_y) != ($hole_edge.y2_km > $position_y)
+                if $hole_crosses
+                  set $hole_intersection_x = try(($hole_edge.x2_km - $hole_edge.x1_km) * ($position_y - $hole_edge.y1_km) / ($hole_edge.y2_km - $hole_edge.y1_km) + $hole_edge.x1_km, $hole_edge.x1_km)
+                  if $position_x < $hole_intersection_x
+                    $inside_this_hole = not $inside_this_hole
+              if $inside_this_hole
+                $inside_hole = true
+            if not $inside_hole
+              $area_matches = true
+    if $area_matches
+      set $area_context = record()
+      $area_context.id = $area_id
+      $area_context.name = $area.name
+      $area_context.layer = $area.layer
+      $area_context.kind = $area.kind
+      $area_context.summary = $area.summary
+      $area_context.description = try($area.description, "")
+      $spatial_context.current_areas.append($area_context)
+
+  # The compiler's sparse grid supplies candidates; exact distance filters them.
+  set $cell_size = $spatial_geography.spatial_index.cell_size_km
+  set $cell_x = round_down($position_x / $cell_size)
+  set $cell_y = round_down($position_y / $cell_size)
+  set $cell_key = $cell_x & "_" & $cell_y
+  set $cell = try($spatial_geography.spatial_index.cells.item($cell_key), record())
+  set $nearby_all = list()
+  for each $nearby_id in try($cell.location_ids, list())
+    if $nearby_id != $resolved_anchor_id and $spatial_geography.location_points.contains($nearby_id) and $spatial_locations.locations.contains($nearby_id)
+      set $near_state = try($spatial_location_state.locations.item($nearby_id), record())
+      if try($near_state.discovered, false)
+        set $near_geo = $spatial_geography.location_points.item($nearby_id)
+        set $near_dx = $near_geo.x_km - $position_x
+        set $near_dy = $near_geo.y_km - $position_y
+        set $near_distance = power($near_dx^2 + $near_dy^2, 0.5)
+        if $near_distance <= $settings.nearby_location_radius_km
+          set $near_detail = $spatial_locations.locations.item($nearby_id)
+          set $near_context = record()
+          set $near_direction = "nearby"
+          if abs($near_dx) >= abs($near_dy) * 2
+            if $near_dx > 0
+              $near_direction = "east"
+            else
+              $near_direction = "west"
+          else if abs($near_dy) >= abs($near_dx) * 2
+            if $near_dy > 0
+              $near_direction = "north"
+            else
+              $near_direction = "south"
+          else if $near_dx > 0 and $near_dy > 0
+            $near_direction = "northeast"
+          else if $near_dx > 0 and $near_dy < 0
+            $near_direction = "southeast"
+          else if $near_dx < 0 and $near_dy > 0
+            $near_direction = "northwest"
+          else if $near_dx < 0 and $near_dy < 0
+            $near_direction = "southwest"
+          $near_context.id = $nearby_id
+          $near_context.name = $near_detail.name
+          $near_context.kind = $near_detail.kind
+          $near_context.summary = $near_detail.summary
+          $near_context.direction = $near_direction
+          $near_context.straight_line_distance_km = $near_distance.round(2)
+          $near_context.elevation_change_m = $near_geo.z_m - $position_z
+          $nearby_all.append($near_context)
+  $spatial_context.nearby_locations = $nearby_all.sort_by(straight_line_distance_km).first($settings.max_nearby_locations)
+
+  # Resolve proximity to roads and waterways even when no path is active.
+  set $nearby_path_all = list()
+  for each $candidate_path_id in try($cell.path_ids, list())
+    if $spatial_geography.paths.contains($candidate_path_id)
+      set $candidate_path = $spatial_geography.paths.item($candidate_path_id)
+      set $best_distance = 999999
+      set $best_segment_index = 0
+      set $best_projection = 0
+      set $best_cumulative = 0
+      set $best_side_value = 0
+      for each $segment in $candidate_path.runtime_segments
+        set $segment_dx = $segment.end_x_km - $segment.start_x_km
+        set $segment_dy = $segment.end_y_km - $segment.start_y_km
+        set $segment_length_sq = $segment_dx^2 + $segment_dy^2
+        set $projection = try((($position_x - $segment.start_x_km) * $segment_dx + ($position_y - $segment.start_y_km) * $segment_dy) / $segment_length_sq, 0)
+        $projection = $projection.constrain(0, 1)
+        set $closest_x = $segment.start_x_km + $segment_dx * $projection
+        set $closest_y = $segment.start_y_km + $segment_dy * $projection
+        set $offset_x = $position_x - $closest_x
+        set $offset_y = $position_y - $closest_y
+        set $segment_distance = power($offset_x^2 + $offset_y^2, 0.5)
+        if $segment_distance < $best_distance
+          $best_distance = $segment_distance
+          $best_segment_index = $segment.index
+          $best_projection = $projection
+          $best_cumulative = $segment.start_cumulative_km + ($segment.end_cumulative_km - $segment.start_cumulative_km) * $projection
+          $best_side_value = $segment_dx * ($position_y - $segment.start_y_km) - $segment_dy * ($position_x - $segment.start_x_km)
+      if $best_distance <= $settings.nearby_path_radius_km
+        set $path_context = record()
+        set $path_relation = "nearby"
+        if $best_distance <= $settings.on_path_tolerance_km
+          $path_relation = "on_path"
+        else if $best_distance <= $settings.on_path_tolerance_km * 5
+          $path_relation = "alongside"
+        set $path_side = "center"
+        if $best_side_value > 0
+          $path_side = "left_of_sequence"
+        else if $best_side_value < 0
+          $path_side = "right_of_sequence"
+        $path_context.id = $candidate_path_id
+        $path_context.name = $candidate_path.name
+        $path_context.type = try($candidate_path.type, "")
+        $path_context.class = try($candidate_path.class, "")
+        $path_context.relation = $path_relation
+        $path_context.distance_km = $best_distance.round(2)
+        $path_context.side = $path_side
+        $path_context.nearest_segment_index = $best_segment_index
+        $path_context.projected_cumulative_km = $best_cumulative.round(2)
+        if $path_context.type = "river" or $path_context.type = "creek" or $path_context.type = "stream"
+          $path_context.sequence_direction = "upstream_to_downstream"
+        $nearby_path_all.append($path_context)
+  $spatial_context.nearby_paths = $nearby_path_all.sort_by(distance_km).first($settings.max_nearby_paths)
+
+  # Active-path progress is optional. Free-roam position remains valid without it.
+  set $path_id = try($spatial_navigation.active_path, "")
+  if $path_id != "" and $spatial_geography.paths.contains($path_id)
+    set $path = $spatial_geography.paths.item($path_id)
+    set $current_index = try($spatial_navigation.current_nav_index, 0)
+    set $next_index = try($spatial_navigation.next_nav_index, 0)
+    set $travel_direction = try($spatial_navigation.travel_direction, "")
+    set $path_type = try($path.type, "")
+    $spatial_context.active_path.id = $path_id
+    $spatial_context.active_path.name = $path.name
+    $spatial_context.active_path.type = $path_type
+    $spatial_context.active_path.class = try($path.class, "")
+    $spatial_context.active_path.surface = try($path.surface, "")
+    $spatial_context.active_path.navigability = try($path.navigability, "")
+    $spatial_context.active_path.travel_direction = $travel_direction
+    set $active_nearby = $nearby_path_all.where(id = $path_id)
+    if $active_nearby.count() > 0
+      set $active_nearby_item = $active_nearby.first()
+      $spatial_context.active_path.position_relation = $active_nearby_item.relation
+      $spatial_context.active_path.distance_from_path_km = $active_nearby_item.distance_km
+      $spatial_context.active_path.projected_cumulative_km = $active_nearby_item.projected_cumulative_km
+    set $is_flowing_water = false
+    if $path_type = "river" or $path_type = "creek" or $path_type = "stream"
+      $is_flowing_water = true
+    if $is_flowing_water
+      $spatial_context.active_path.sequence_direction = "upstream_to_downstream"
+      if $next_index > $current_index
+        $spatial_context.active_path.flow_relation = "downstream"
+      else if $next_index < $current_index
+        $spatial_context.active_path.flow_relation = "upstream"
+      else
+        $spatial_context.active_path.flow_relation = "stationary"
+    if $current_index >= 1 and $next_index >= 1 and $current_index <= $path.nav_points.count() and $next_index <= $path.nav_points.count()
+      set $from_point = $path.nav_points.item($current_index)
+      set $to_point = $path.nav_points.item($next_index)
+      set $segment_dx = $to_point.x_km - $from_point.x_km
+      set $segment_dy = $to_point.y_km - $from_point.y_km
+      set $segment_dz = $to_point.z_m - $from_point.z_m
+      set $horizontal_km = power($segment_dx^2 + $segment_dy^2, 0.5)
+      set $distance_3d_km = power($horizontal_km^2 + ($segment_dz / 1000)^2, 0.5)
+      set $grade_pct = try(($segment_dz / ($horizontal_km * 1000)) * 100, 0)
+      set $absolute_grade = abs($grade_pct)
+      set $slope_character = "approximately level"
+      if $absolute_grade >= 10
+        if $grade_pct > 0
+          $slope_character = "very steep ascent"
+        else
+          $slope_character = "very steep descent"
+      else if $absolute_grade >= 6
+        if $grade_pct > 0
+          $slope_character = "steep ascent"
+        else
+          $slope_character = "steep descent"
+      else if $absolute_grade >= 3
+        if $grade_pct > 0
+          $slope_character = "noticeable ascent"
+        else
+          $slope_character = "noticeable descent"
+      else if $absolute_grade >= 1
+        if $grade_pct > 0
+          $slope_character = "gentle ascent"
+        else
+          $slope_character = "gentle descent"
+      $spatial_context.active_path.segment_horizontal_km = $horizontal_km.round(2)
+      $spatial_context.active_path.segment_3d_km = $distance_3d_km.round(2)
+      $spatial_context.active_path.elevation_change_m = $segment_dz
+      $spatial_context.active_path.average_grade_pct = $grade_pct.round(2)
+      $spatial_context.active_path.slope_character = $slope_character
+      set $waypoint_index = try($spatial_navigation.next_waypoint_nav_index, 0)
+      if $waypoint_index >= 1 and $waypoint_index <= $path.nav_points.count()
+        set $waypoint_point = $path.nav_points.item($waypoint_index)
+        set $waypoint_location_id = try($waypoint_point.location_id, "")
+        if $waypoint_location_id != "" and $spatial_locations.locations.contains($waypoint_location_id)
+          set $waypoint_state = try($spatial_location_state.locations.item($waypoint_location_id), record())
+          if try($waypoint_state.discovered, false)
+            set $waypoint_detail = $spatial_locations.locations.item($waypoint_location_id)
+            $spatial_context.active_path.next_waypoint_known = true
+            $spatial_context.active_path.next_waypoint_id = $waypoint_location_id
+            $spatial_context.active_path.next_waypoint_name = $waypoint_detail.name
+            $spatial_context.active_path.next_waypoint_role = try($waypoint_point.role, "")
+            $spatial_context.active_path.distance_to_waypoint_km = abs($waypoint_point.cumulative_km - $from_point.cumulative_km).round(2)
+          else
+            $spatial_context.active_path.next_waypoint_known = false
