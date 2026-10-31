@@ -5,5 +5,5 @@
 window.IW_SITE_CONFIG = {
   docsUrl: "./docs/",
   downloadUrl: "./downloads/IW-Spatial-Context-1.0.RC3.zip",
-  githubUrl: "https://github.com/your-account/iw-spatial-toolkit"
+  githubUrl: "https://github.com/jan-maska/iw-spatial-toolkit"
 };
